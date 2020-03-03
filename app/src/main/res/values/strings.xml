@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Prakt1</string>
+    <string name="tab_text_1">Audio</string>
+    <string name="tab_text_2">Kamera</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

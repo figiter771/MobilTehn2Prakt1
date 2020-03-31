@@ -6,6 +6,7 @@ import android.os.Bundle;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,12 +15,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import java.util.Date;
+
 import lv.olgerts.prakt1.ui.main.AudioFragment;
 import lv.olgerts.prakt1.ui.main.KameraFragment;
 import lv.olgerts.prakt1.ui.main.SectionsPagerAdapter;
 
 public class MainActivity extends AppCompatActivity implements AudioFragment.OnFragmentInteractionListener, KameraFragment.OnFragmentInteractionListener {
 
+    private FirebaseAnalytics mFirebaseAnalytics;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,6 +34,13 @@ public class MainActivity extends AppCompatActivity implements AudioFragment.OnF
         TabLayout tabs = findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);
         FloatingActionButton fab = findViewById(R.id.fab);
+
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, ""+new Date().getTime() );
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Logged in");
+        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "String");
+        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.APP_OPEN, bundle);
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override

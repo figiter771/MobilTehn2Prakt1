@@ -4,12 +4,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Environment;
 import android.preference.PreferenceManager;
@@ -19,14 +23,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import lv.olgerts.prakt1.R;
 
@@ -41,11 +52,17 @@ import static android.app.Activity.RESULT_OK;
  * create an instance of this fragment.
  */
 public class KameraFragment extends Fragment {
+
+    private FirebaseAnalytics mFirebaseAnalytics;
+
     private OnFragmentInteractionListener mListener;
     static final int REQUEST_IMAGE_CAPTURE = 1;
     String currentPhotoPath;
+    List<Uri> imagePhotoPathList = new ArrayList<>();
     static final int REQUEST_TAKE_PHOTO = 1;
     Uri photoUriResult;
+    RecyclerView imageGrid;
+    KameraFragmentListAdapter gridViewAdapter;
     public KameraFragment() {
         // Required empty public constructor
     }
@@ -65,6 +82,8 @@ public class KameraFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Obtain the FirebaseAnalytics instance.
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(getContext());
         if (getArguments() != null) {
 
         }
@@ -85,6 +104,15 @@ public class KameraFragment extends Fragment {
                 dispatchTakePictureIntent();
             }
         });
+
+        imageGrid = view.findViewById(R.id.image_grid);
+        gridViewAdapter = new KameraFragmentListAdapter(getContext(),imagePhotoPathList);
+        imageGrid.setAdapter(gridViewAdapter);
+        LinearLayoutManager llm = new LinearLayoutManager(getContext());
+        llm.setOrientation(LinearLayoutManager.HORIZONTAL);
+        imageGrid.setLayoutManager(llm);
+//        gridViewAdapter = new MyListAdapter(getContext(),imagePhotoPathList);
+//        imageGrid.setAdapter(gridViewAdapter);
         return view;
     }
 
@@ -141,15 +169,22 @@ public class KameraFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
        if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
           ImageView imageView = getView().findViewById(R.id.imageView2);
+
           imageView.setImageURI(photoUriResult);
+          imagePhotoPathList.add(photoUriResult);
+          updateImageGridBox(imagePhotoPathList);
         }
     }
+
 
     private File createImageFile() throws IOException {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File storageDir = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.FROYO) {
+            storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        }
         File image = File.createTempFile(
                 imageFileName,  /* prefix */
                 ".jpg",         /* suffix */
@@ -159,6 +194,12 @@ public class KameraFragment extends Fragment {
         // Save a file: path for use with ACTION_VIEW intents
         currentPhotoPath = image.getAbsolutePath();
         return image;
+    }
+
+    private void updateImageGridBox(List<Uri> list) {
+        gridViewAdapter.notifyItemInserted(list.size() - 1);
+        imageGrid.setAdapter(gridViewAdapter);
+
     }
 
 

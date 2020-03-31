@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "427655924780",
+    "firebase_url": "https://prakt1.firebaseio.com",
+    "project_id": "prakt1",
+    "storage_bucket": "prakt1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:427655924780:android:72bb8281852f107f6fd589",
+        "android_client_info": {
+          "package_name": "lv.olgerts.prakt1"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "427655924780-j8ekmp6hkinb14gg3b2qn4k8dffotlcn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDAsGsuv1Ad42qY8gWC1LaI4qKANJtYBOA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "427655924780-j8ekmp6hkinb14gg3b2qn4k8dffotlcn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
